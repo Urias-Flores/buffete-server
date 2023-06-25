@@ -6,30 +6,30 @@ import { User } from 'src/user/user.entity';
 
 @Injectable()
 export class ClientService {
-    constructor(
-        @InjectRepository(Client)
-        private readonly clientRepository: Repository<Client>,
-        @InjectRepository(User)
-        private readonly userRepository: Repository<User>
-    ){}
+  constructor(
+    @InjectRepository(Client)
+    private readonly clientRepository: Repository<Client>,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
+  ) {}
 
-    async findAll(): Promise<Client[]> {
-        return await this.clientRepository.find({relations: ['User']});
-    }
+  async findAll(): Promise<Client[]> {
+    return await this.clientRepository.find({ relations: ['User'] });
+  }
 
-    async findByID(ClientID: number) {
-        return await this.clientRepository.findBy({ ClientID });
-    }
+  async findByID(ClientID: number) {
+    return await this.clientRepository.findBy({ ClientID });
+  }
 
-    async save(client: Client): Promise<Client>{
-        return await this.clientRepository.save(client);
-    }
+  async save(client: Client): Promise<Client> {
+    return await this.clientRepository.save(client);
+  }
 
-    async update(ClientID: number, client: Client){
-        return await this.clientRepository.update({ClientID}, client);
-    }
+  async update(ClientID: number, client: Client) {
+    return await this.clientRepository.update({ ClientID }, client);
+  }
 
-    async delete(ClientID: number){
-        return await this.clientRepository.delete(ClientID);
-    }
+  async delete(ClientID: number) {
+    return await this.clientRepository.delete(ClientID);
+  }
 }
