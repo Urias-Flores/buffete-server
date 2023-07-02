@@ -3,6 +3,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Client } from './client.entity';
 import { Repository } from 'typeorm';
 import { User } from 'src/user/user.entity';
+import { doc } from 'prettier';
+import join = doc.builders.join;
+import { stringify } from 'ts-jest';
 
 @Injectable()
 export class ClientService {
@@ -21,7 +24,12 @@ export class ClientService {
     return await this.clientRepository.findBy({ ClientID });
   }
 
+  async findByURL(URL: string) {
+    return await this.clientRepository.findOneBy({ URL: URL });
+  }
+
   async save(client: Client): Promise<Client> {
+    client.URL = client.Name.replace(/ /g, '-');
     return await this.clientRepository.save(client);
   }
 

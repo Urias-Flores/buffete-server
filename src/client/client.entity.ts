@@ -13,7 +13,7 @@ export class Client {
   @PrimaryGeneratedColumn({ type: 'int' })
   ClientID: number;
 
-  @ManyToOne((type) => User, (user) => user.Clients)
+  @ManyToOne(() => User, (user) => user.Clients)
   @Column({ type: 'int' })
   User: User;
 
@@ -32,6 +32,9 @@ export class Client {
   @Column({ type: 'text' })
   Address: string;
 
-  @OneToMany((type) => Document, (document) => document.Client)
+  @Column({ type: 'varchar', length: 84 })
+  URL: string;
+
+  @OneToMany(() => Document, (document) => document.Client)
   Documents: Document[];
 }

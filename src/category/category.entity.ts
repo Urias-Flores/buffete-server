@@ -13,7 +13,7 @@ export class Category {
   @PrimaryGeneratedColumn({ type: 'int' })
   CategoryID: number;
 
-  @ManyToOne((type) => User, (user) => user.Categories)
+  @ManyToOne(() => User, (user) => user.Categories)
   @Column({ type: 'int' })
   User: User;
 
@@ -26,6 +26,6 @@ export class Category {
   @Column({ type: 'datetime' })
   UpdatedDate: Date;
 
-  @OneToMany((type) => Subcategory, (subcategory) => subcategory.Category)
+  @OneToMany(() => Subcategory, (subcategory) => subcategory.Category)
   Subcategories: Subcategory[];
 }

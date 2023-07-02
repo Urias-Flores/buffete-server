@@ -13,7 +13,7 @@ export class CategoryService {
   async findAll(): Promise<Category[]> {
     return await this.categoryRepository.find({
       relations: ['Subcategories', 'User'],
-      order: { CategoryID: 'DESC' },
+      order: { CategoryID: 'ASC' },
     });
   }
 

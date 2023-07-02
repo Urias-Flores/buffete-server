@@ -23,6 +23,11 @@ export class ClientController {
     return this.clientService.findByID(id);
   }
 
+  @Get('/URL/:URL')
+  findByURL(@Param('URL') URL: string) {
+    return this.clientService.findByURL(URL);
+  }
+
   @Post()
   create(@Body() client) {
     return this.clientService.save(client);

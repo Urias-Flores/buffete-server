@@ -7,11 +7,14 @@ export class Document {
   @PrimaryGeneratedColumn({ type: 'int' })
   DocumentID: number;
 
-  @ManyToOne(() => Subcategory, (subcategory) => subcategory.Documents)
+  @ManyToOne(
+    () => Subcategory,
+    (subcategory: Subcategory) => subcategory.Documents,
+  )
   @Column({ type: 'int' })
   Subcategory: Subcategory;
 
-  @ManyToOne(() => Client, (client) => client.Documents)
+  @ManyToOne(() => Client, (client: Client) => client.Documents)
   @Column({ type: 'int' })
   Client: Client;
 
