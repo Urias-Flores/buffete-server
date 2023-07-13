@@ -18,9 +18,9 @@ export class User {
   @Column({ type: 'int' })
   State: number;
 
-  @OneToMany((type) => Client, (client) => client.User)
+  @OneToMany(() => Client, (client) => client.User)
   Clients: Client[];
 
-  @OneToMany((type) => Category, (category) => category.User)
+  @OneToMany(() => Category, (category) => category.User)
   Categories: Category[];
 }

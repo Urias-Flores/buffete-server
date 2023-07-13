@@ -11,18 +11,25 @@ import { Client } from './client/client.entity';
 import { Document } from './document/document.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot({
-      type: 'mysql',
-      host: 'localhost',
-      port: 3306,
-      username: 'root',
-      password: 'alone2020',
-      database: 'buffetedb',
-      entities: [User, Client, Category, Subcategory, Document],
-      synchronize: true,
+    ConfigModule.forRoot({ isGlobal: true }),
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService) => ({
+        type: 'postgres',
+        host: configService.get('DB_HOST'),
+        port: configService.get('DB_PORT'),
+        username: configService.get('DB_USER'),
+        password: configService.get('DB_PASSWORD'),
+        database: configService.get('DB_NAME'),
+        entities: [User, Client, Category, Subcategory, Document],
+        synchronize: true,
+        ssl: true,
+      }),
+      inject: [ConfigService],
     }),
     UserModule,
     ClientModule,

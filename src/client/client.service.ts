@@ -3,9 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Client } from './client.entity';
 import { Repository } from 'typeorm';
 import { User } from 'src/user/user.entity';
-import { doc } from 'prettier';
-import join = doc.builders.join;
-import { stringify } from 'ts-jest';
 
 @Injectable()
 export class ClientService {

@@ -24,9 +24,9 @@ export class Document {
   @Column({ type: 'text' })
   URL: string;
 
-  @Column({ type: 'datetime' })
+  @Column({ type: 'timestamp' })
   CreatedDate: Date;
 
-  @Column({ type: 'datetime' })
+  @Column({ type: 'timestamp' })
   UpdatedDate: Date;
 }

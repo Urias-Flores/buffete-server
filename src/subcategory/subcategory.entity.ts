@@ -20,10 +20,10 @@ export class Subcategory {
   @Column({ type: 'varchar', length: 30 })
   Name: string;
 
-  @Column({ type: 'datetime' })
+  @Column({ type: 'timestamp' })
   CreatedDate: Date;
 
-  @Column({ type: 'datetime' })
+  @Column({ type: 'timestamp' })
   UpdatedDate: Date;
 
   @OneToMany((type) => Document, (document) => document.Subcategory)
