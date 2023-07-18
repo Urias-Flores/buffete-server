@@ -30,6 +30,7 @@ export class ClientController {
 
   @Post()
   create(@Body() client) {
+    console.log(client);
     return this.clientService.save(client);
   }
 
