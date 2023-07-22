@@ -1,5 +1,5 @@
-import { Category } from 'src/category/category.entity';
 import { Document } from 'src/document/document.entity';
+import { User } from 'src/user/user.entity';
 import {
   Entity,
   Column,
@@ -8,14 +8,14 @@ import {
   OneToMany,
 } from 'typeorm';
 
-@Entity('subcategory')
-export class Subcategory {
+@Entity('subject')
+export class Subject {
   @PrimaryGeneratedColumn({ type: 'int' })
-  SubcategoryID: number;
+  SubjectID: number;
 
-  @ManyToOne((type) => Category, (category) => category.Subcategories)
+  @ManyToOne(() => User, (user) => user.Subjects)
   @Column({ type: 'int' })
-  Category: Category;
+  User: User;
 
   @Column({ type: 'varchar', length: 30 })
   Name: string;
@@ -26,6 +26,6 @@ export class Subcategory {
   @Column({ type: 'timestamp' })
   UpdatedDate: Date;
 
-  @OneToMany((type) => Document, (document) => document.Subcategory)
+  @OneToMany(() => Document, (document) => document.Subject)
   Documents: Document[];
 }

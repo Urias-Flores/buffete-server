@@ -1,18 +1,15 @@
 import { Client } from 'src/client/client.entity';
-import { Subcategory } from 'src/subcategory/subcategory.entity';
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { Subject } from '../subject/subject.entity';
 
 @Entity('document')
 export class Document {
   @PrimaryGeneratedColumn({ type: 'int' })
   DocumentID: number;
 
-  @ManyToOne(
-    () => Subcategory,
-    (subcategory: Subcategory) => subcategory.Documents,
-  )
+  @ManyToOne(() => Subject, (subject: Subject) => subject.Documents)
   @Column({ type: 'int' })
-  Subcategory: Subcategory;
+  Subject: Subject;
 
   @ManyToOne(() => Client, (client: Client) => client.Documents)
   @Column({ type: 'int' })

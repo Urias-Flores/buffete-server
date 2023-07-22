@@ -1,4 +1,4 @@
-import { Category } from 'src/category/category.entity';
+import { Subject } from 'src/subject/subject.entity';
 import { Client } from 'src/client/client.entity';
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 @Entity('user')
@@ -21,6 +21,6 @@ export class User {
   @OneToMany(() => Client, (client) => client.User)
   Clients: Client[];
 
-  @OneToMany(() => Category, (category) => category.User)
-  Categories: Category[];
+  @OneToMany(() => Subject, (subject) => subject.User)
+  Subjects: Subject[];
 }

@@ -1,16 +1,13 @@
 import { Module } from '@nestjs/common';
 import { UserModule } from './user/user.module';
 import { ClientModule } from './client/client.module';
-import { CategoryModule } from './category/category.module';
-import { SubcategoryModule } from './subcategory/subcategory.module';
+import { SubjectModule } from './subject/subject.module';
 import { DocumentModule } from './document/document.module';
 import { User } from './user/user.entity';
-import { Category } from './category/category.entity';
-import { Subcategory } from './subcategory/subcategory.entity';
+import { Subject } from './subject/subject.entity';
 import { Client } from './client/client.entity';
 import { Document } from './document/document.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
@@ -25,7 +22,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
         username: configService.get('DB_USER'),
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_NAME'),
-        entities: [User, Client, Category, Subcategory, Document],
+        entities: [User, Client, Subject, Document],
         synchronize: true,
         ssl: true,
       }),
@@ -33,10 +30,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
     }),
     UserModule,
     ClientModule,
-    CategoryModule,
-    SubcategoryModule,
+    SubjectModule,
     DocumentModule,
-    CloudinaryModule,
   ],
   controllers: [],
   providers: [],

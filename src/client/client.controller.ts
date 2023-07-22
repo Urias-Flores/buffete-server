@@ -25,6 +25,7 @@ export class ClientController {
 
   @Get('/URL/:URL')
   findByURL(@Param('URL') URL: string) {
+    console.log(URL);
     return this.clientService.findByURL(URL);
   }
 

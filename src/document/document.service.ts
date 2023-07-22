@@ -12,13 +12,16 @@ export class DocumentService {
 
   async findAll(): Promise<Document[]> {
     return await this.documentService.find({
-      relations: ['Subcategory'],
-      order: { DocumentID: 'ASC' },
+      relations: ['Subject'],
     });
   }
 
-  async findByID(DocumentID: number) {
-    return await this.documentService.findOneBy({ DocumentID });
+  async findByID(DocumentID: number): Promise<Document> {
+    const documents = await this.documentService.find({
+      where: { DocumentID },
+      relations: ['Subject'],
+    });
+    return documents[0];
   }
 
   async save(document: Document): Promise<Document> {
