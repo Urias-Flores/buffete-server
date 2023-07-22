@@ -33,22 +33,24 @@ export class DocumentController {
   @Get('/download/:filename')
   getFileDocument(@Param('filename') filename: string, @Res() res: Response) {
     const filePath = path.join(__dirname, '..', '..', 'files', filename);
-    res.setHeader('Content-Disposition', `attachment; filename=${filename}`);
+    res.setHeader('Content-Disposition', `attachment; filename=file.pdf`);
     res.sendFile(filePath);
   }
 
   @Post()
   @UseInterceptors(FileInterceptor('File'))
-  addDocument(@Body() body, @UploadedFile() file: Express.Multer.File): string {
+  addDocument(
+    @Body('Name') name,
+    @UploadedFile() file: Express.Multer.File,
+  ): string {
     console.log('Todo OK');
-    console.log(body);
+    console.log(name);
 
     const uniqueFileName = uuid.v4();
-    const originalExtension = path.extname(file.originalname);
+    const originalExtension: string = path.extname(file.originalname);
     const savedFileName = `${uniqueFileName}${originalExtension}`;
-    const destinationPath = path.join('./files', savedFileName);
+    const destinationPath: string = path.join('./files', savedFileName);
     fs.renameSync(file.path, destinationPath);
-
     console.log(file);
     return 'OK';
   }
