@@ -10,6 +10,7 @@ import { Client } from './client/client.entity';
 import { Document } from './document/document.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { AppController } from './app.controller';
 
 @Module({
   imports: [
@@ -34,7 +35,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
     SubjectModule,
     DocumentModule,
   ],
-  controllers: [],
+  controllers: [AppController],
   providers: [],
 })
 export class AppModule {
