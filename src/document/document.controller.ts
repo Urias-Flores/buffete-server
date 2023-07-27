@@ -15,10 +15,16 @@ import { Response } from 'express';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as uuid from 'uuid';
+import { SubjectService } from '../subject/subject.service';
+import { ClientService } from '../client/client.service';
 
 @Controller('document')
 export class DocumentController {
-  constructor(private readonly documentRepository: DocumentService) {}
+  constructor(
+    private readonly documentRepository: DocumentService,
+    private readonly subjectRepository: SubjectService,
+    private readonly clientRepository: ClientService,
+  ) {}
 
   @Get()
   getDocuments(): Promise<Document[]> {
@@ -26,7 +32,7 @@ export class DocumentController {
   }
 
   @Get(':id')
-  getDocumentByID(@Param() params): Promise<Document> {
+  getDocumentByID(@Param() params: any): Promise<Document> {
     return this.documentRepository.findByID(params.id);
   }
 
@@ -39,19 +45,33 @@ export class DocumentController {
 
   @Post()
   @UseInterceptors(FileInterceptor('File'))
-  addDocument(
-    @Body('Name') name,
+  async addDocument(
+    @Body('Name') name: string,
+    @Body('Subject') subject: string,
+    @Body('Client') client: string,
     @UploadedFile() file: Express.Multer.File,
-  ): string {
-    console.log('Todo OK');
-    console.log(name);
-
+  ): Promise<Document> {
     const uniqueFileName = uuid.v4();
     const originalExtension: string = path.extname(file.originalname);
     const savedFileName = `${uniqueFileName}${originalExtension}`;
     const destinationPath: string = path.join('./files', savedFileName);
     fs.renameSync(file.path, destinationPath);
-    console.log(file);
-    return 'OK';
+
+    const document: Document = new Document();
+    document.Subject = parseInt(subject);
+    document.Client = parseInt(client);
+    document.Name = name;
+    document.URL = savedFileName;
+
+    try {
+      return await this.documentRepository.save(document);
+    } catch (exception) {
+      fs.unlink(destinationPath, (error) => {
+        if (error) {
+          console.log('Error al eliminar el archivo');
+        }
+      });
+      return exception;
+    }
   }
 }

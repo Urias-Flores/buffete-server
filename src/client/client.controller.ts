@@ -8,6 +8,7 @@ import {
   Body,
 } from '@nestjs/common';
 import { ClientService } from './client.service';
+import { Client } from './client.entity';
 
 @Controller('client')
 export class ClientController {
@@ -19,19 +20,17 @@ export class ClientController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: number) {
+  findClientByID(@Param('id') id: number): Promise<Client> {
     return this.clientService.findByID(id);
   }
 
   @Get('/URL/:URL')
   findByURL(@Param('URL') URL: string) {
-    console.log(URL);
     return this.clientService.findByURL(URL);
   }
 
   @Post()
   create(@Body() client) {
-    console.log(client);
     return this.clientService.save(client);
   }
 

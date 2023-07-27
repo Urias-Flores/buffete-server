@@ -12,7 +12,7 @@ export class DocumentService {
 
   async findAll(): Promise<Document[]> {
     return await this.documentService.find({
-      relations: ['Subject'],
+      relations: ['Subject', 'Client'],
     });
   }
 

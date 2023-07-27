@@ -22,14 +22,16 @@ export class ClientService {
   async findAll(): Promise<Client[]> {
     return await this.clientRepository.find({
       relations: ['User', 'Documents'],
+      order: { Name: 'ASC' },
     });
   }
 
-  async findByID(ClientID: number) {
-    return await this.clientRepository.find({
+  async findByID(ClientID: number): Promise<Client> {
+    const clients = await this.clientRepository.find({
       where: { ClientID: ClientID },
       relations: ['User', 'Documents'],
     });
+    return clients[0];
   }
 
   async findByURL(URL: string) {
@@ -45,6 +47,7 @@ export class ClientService {
   }
 
   async update(ClientID: number, client: Client) {
+    client.URL = client.Name.replace(/ /g, '-');
     return await this.clientRepository.update({ ClientID }, client);
   }
 

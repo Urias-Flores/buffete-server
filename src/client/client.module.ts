@@ -11,5 +11,6 @@ import { Document } from '../document/document.entity';
   imports: [TypeOrmModule.forFeature([Client, Subject, User, Document])],
   controllers: [ClientController],
   providers: [ClientService],
+  exports: [ClientService],
 })
 export class ClientModule {}

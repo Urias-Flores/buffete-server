@@ -1,4 +1,5 @@
-import { Module } from '@nestjs/common';
+import { Module, MiddlewareConsumer } from '@nestjs/common';
+import { CorsMiddleware } from './cors.middleware';
 import { UserModule } from './user/user.module';
 import { ClientModule } from './client/client.module';
 import { SubjectModule } from './subject/subject.module';
@@ -36,4 +37,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
   controllers: [],
   providers: [],
 })
-export class AppModule {}
+export class AppModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(CorsMiddleware).forRoutes('*');
+  }
+}

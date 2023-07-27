@@ -9,11 +9,11 @@ export class Document {
 
   @ManyToOne(() => Subject, (subject: Subject) => subject.Documents)
   @Column({ type: 'int' })
-  Subject: Subject;
+  Subject: number;
 
   @ManyToOne(() => Client, (client: Client) => client.Documents)
   @Column({ type: 'int' })
-  Client: Client;
+  Client: number;
 
   @Column({ type: 'varchar', length: 30 })
   Name: string;
@@ -21,9 +21,9 @@ export class Document {
   @Column({ type: 'text' })
   URL: string;
 
-  @Column({ type: 'timestamp' })
+  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   CreatedDate: Date;
 
-  @Column({ type: 'timestamp' })
+  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   UpdatedDate: Date;
 }
