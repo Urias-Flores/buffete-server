@@ -7,6 +7,7 @@ import {
   UploadedFile,
   UseInterceptors,
   Res,
+  Delete,
 } from '@nestjs/common';
 import { Document } from './document.entity';
 import { DocumentService } from './document.service';
@@ -15,16 +16,10 @@ import { Response } from 'express';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as uuid from 'uuid';
-import { SubjectService } from '../subject/subject.service';
-import { ClientService } from '../client/client.service';
 
 @Controller('document')
 export class DocumentController {
-  constructor(
-    private readonly documentRepository: DocumentService,
-    private readonly subjectRepository: SubjectService,
-    private readonly clientRepository: ClientService,
-  ) {}
+  constructor(private readonly documentRepository: DocumentService) {}
 
   @Get()
   getDocuments(): Promise<Document[]> {
@@ -72,6 +67,27 @@ export class DocumentController {
         }
       });
       return exception;
+    }
+  }
+
+  @Delete(':id')
+  async deleteDocument(@Param() params: any) {
+    try {
+      const document = await this.documentRepository.findByID(params.id);
+      if (Object.keys(document).length > 0) {
+        const result = await this.documentRepository.delete(params.id);
+        if (result.affected > 0) {
+          fs.unlink(path.join('./files', document.URL), (error) => {
+            if (error) {
+              console.log('Error al eliminar el archivo');
+            }
+          });
+          return result;
+        }
+      }
+    } catch (exception) {
+      console.log(exception);
+      return { affected: 0, raw: 0 };
     }
   }
 }

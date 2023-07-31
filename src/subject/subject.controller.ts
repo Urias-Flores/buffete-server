@@ -20,6 +20,11 @@ export class SubjectController {
     return await this.subjectService.findAll();
   }
 
+  @Get('/name/:name')
+  async getSubjectByName(@Param() params): Promise<Subject> {
+    return await this.subjectService.findByName(params.name);
+  }
+
   @Get(':id')
   async findByID(@Param('id') id: number): Promise<Subject> {
     return await this.subjectService.findByID(id);

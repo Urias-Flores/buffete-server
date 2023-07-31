@@ -13,10 +13,19 @@ export class SubjectService {
   async findAll(): Promise<Subject[]> {
     return await this.subjectRepository.find({
       relations: ['Documents', 'User'],
-      order: { SubjectID: 'ASC' },
+      order: { Name: 'ASC' },
     });
   }
 
+  async findByName(Name: string): Promise<Subject> {
+    const subjects = await this.subjectRepository.find({
+      relations: ['Documents', 'User'],
+      where: {
+        Name: Name,
+      },
+    });
+    return subjects[0];
+  }
   async findByID(SubjectID: number): Promise<Subject> {
     return await this.subjectRepository.findOneBy({ SubjectID });
   }
