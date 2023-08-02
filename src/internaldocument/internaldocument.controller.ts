@@ -2,7 +2,6 @@ import {
   Controller,
   Get,
   Post,
-  Put,
   Delete,
   Param,
   Body,
@@ -10,14 +9,14 @@ import {
   UseInterceptors,
   Res,
 } from '@nestjs/common';
+import { DeleteResult } from 'typeorm';
 import { InternalDocumentService } from './internaldocument.service';
 import { InternalDocument } from './internaldocument.entity';
 import { FileInterceptor } from '@nestjs/platform-express';
-import path from 'path';
-import fs from 'fs';
+import { Response } from 'express';
 import * as uuid from 'uuid';
-import { DeleteResult } from 'typeorm';
-import { Response } from "express";
+import * as path from 'path';
+import * as fs from 'fs';
 
 @Controller('internaldocument')
 export class InternalDocumentController {
@@ -50,7 +49,13 @@ export class InternalDocumentController {
 
   @Get('/download/:filename')
   getFileDocument(@Param('filename') filename: string, @Res() res: Response) {
-    const filePath = path.join(__dirname, '..', '..', 'files', filename);
+    const filePath = path.join(
+      __dirname,
+      '..',
+      '..',
+      'internal-files',
+      filename,
+    );
     res.setHeader('Content-Disposition', `attachment; filename=file.pdf`);
     res.sendFile(filePath);
   }
