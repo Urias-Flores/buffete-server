@@ -11,6 +11,8 @@ import { Document } from './document/document.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AppController } from './app.controller';
+import { InternalDocumentModule } from './internaldocument/internaldocument.module';
+import { InternalDocument } from './internaldocument/internaldocument.entity';
 
 @Module({
   imports: [
@@ -24,7 +26,7 @@ import { AppController } from './app.controller';
         username: configService.get('DB_USER'),
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_NAME'),
-        entities: [User, Client, Subject, Document],
+        entities: [User, Client, Subject, Document, InternalDocument],
         synchronize: true,
         ssl: true,
       }),
@@ -34,6 +36,7 @@ import { AppController } from './app.controller';
     ClientModule,
     SubjectModule,
     DocumentModule,
+    InternalDocumentModule,
   ],
   controllers: [AppController],
   providers: [],

@@ -1,6 +1,7 @@
 import { Subject } from 'src/subject/subject.entity';
 import { Client } from 'src/client/client.entity';
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { InternalDocument } from '../internaldocument/internaldocument.entity';
 @Entity('user')
 export class User {
   @PrimaryGeneratedColumn({ type: 'int' })
@@ -23,4 +24,10 @@ export class User {
 
   @OneToMany(() => Subject, (subject) => subject.User)
   Subjects: Subject[];
+
+  @OneToMany(
+    () => InternalDocument,
+    (internalDocument) => internalDocument.User,
+  )
+  InternalDocuments: InternalDocument[];
 }
