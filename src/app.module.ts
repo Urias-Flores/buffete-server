@@ -13,6 +13,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { InternalDocumentModule } from './internaldocument/internaldocument.module';
 import { InternalDocument } from './internaldocument/internaldocument.entity';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -28,7 +29,7 @@ import { InternalDocument } from './internaldocument/internaldocument.entity';
         database: configService.get('DB_NAME'),
         entities: [User, Client, Subject, Document, InternalDocument],
         synchronize: true,
-        ssl: true,
+        ssl: false,
       }),
       inject: [ConfigService],
     }),
@@ -37,6 +38,7 @@ import { InternalDocument } from './internaldocument/internaldocument.entity';
     SubjectModule,
     DocumentModule,
     InternalDocumentModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [],

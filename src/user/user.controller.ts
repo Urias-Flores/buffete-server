@@ -24,7 +24,7 @@ export class UserController {
   }
 
   @Post()
-  create(@Body() user) {
+  create(@Body() user: any) {
     return this.userService.save(user);
   }
 
