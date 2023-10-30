@@ -7,6 +7,7 @@ import {
   ManyToOne,
   OneToMany,
 } from 'typeorm';
+import { Date } from '../date/date.entity';
 
 @Entity('client')
 export class Client {
@@ -37,4 +38,7 @@ export class Client {
 
   @OneToMany(() => Document, (document) => document.Client)
   Documents: Document[];
+
+  @OneToMany(() => Date, (date: Date) => date.Client)
+  Dates: Date[];
 }

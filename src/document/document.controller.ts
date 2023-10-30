@@ -16,6 +16,7 @@ import { Response } from 'express';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as uuid from 'uuid';
+import { User } from "../user/user.entity";
 
 @Controller('document')
 export class DocumentController {
@@ -44,6 +45,7 @@ export class DocumentController {
     @Body('Name') name: string,
     @Body('Subject') subject: string,
     @Body('Client') client: string,
+    @Body('User') user: string,
     @UploadedFile() file: Express.Multer.File,
   ): Promise<Document> {
     const uniqueFileName = uuid.v4();
@@ -55,6 +57,7 @@ export class DocumentController {
     const document: Document = new Document();
     document.Subject = parseInt(subject);
     document.Client = parseInt(client);
+    document.User = parseInt(user);
     document.Name = name;
     document.URL = savedFileName;
 

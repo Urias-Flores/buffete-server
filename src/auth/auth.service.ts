@@ -15,14 +15,14 @@ export class AuthService {
 
   async login(user: AuthDto): Promise<ResponseDto> {
     const users: User[] = await this.userService
-      .createQueryBuilder('users')
-      .where('users.Email = :Email_Name OR users.Name = :Email_Name', {
+      .createQueryBuilder('user')
+      .where('user.Email = :Email_Name', {
         Email_Name: user.Email_Name,
       })
       .getMany();
 
     if (users.length === 0) {
-      return new ResponseDto(-1, 'Email or name not found');
+      return new ResponseDto(-1, 'Email or name not found', null);
     }
 
     const passwordMatch = await this.hashService.comparePasswords(
@@ -31,9 +31,9 @@ export class AuthService {
     );
 
     if (!passwordMatch) {
-      return new ResponseDto(0, 'Incorrect Password');
+      return new ResponseDto(0, 'Incorrect Password', null);
     } else {
-      return new ResponseDto(1, 'Success');
+      return new ResponseDto(1, 'Success', users[0]);
     }
   }
 }

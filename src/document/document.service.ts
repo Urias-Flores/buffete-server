@@ -27,7 +27,11 @@ export class DocumentService {
   async save(document: Document): Promise<Document> {
     document.CreatedDate = new Date();
     document.UpdatedDate = new Date();
-    return await this.documentService.save(document);
+    try {
+      return await this.documentService.save(document);
+    } catch (error) {
+      throw new Error('Error al insertar documento');
+    }
   }
 
   async update(DocumentID: number, document: Document): Promise<UpdateResult> {

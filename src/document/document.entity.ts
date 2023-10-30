@@ -1,6 +1,7 @@
 import { Client } from 'src/client/client.entity';
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 import { Subject } from '../subject/subject.entity';
+import { User } from '../user/user.entity';
 
 @Entity('document')
 export class Document {
@@ -14,6 +15,10 @@ export class Document {
   @ManyToOne(() => Client, (client: Client) => client.Documents)
   @Column({ type: 'int' })
   Client: number;
+
+  @ManyToOne(() => User, (user: User) => user.Documents)
+  @Column({ type: 'int' })
+  User: number;
 
   @Column({ type: 'varchar', length: 30 })
   Name: string;

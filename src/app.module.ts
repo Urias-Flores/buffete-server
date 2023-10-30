@@ -14,6 +14,8 @@ import { AppController } from './app.controller';
 import { InternalDocumentModule } from './internaldocument/internaldocument.module';
 import { InternalDocument } from './internaldocument/internaldocument.entity';
 import { AuthModule } from './auth/auth.module';
+import { DateModule } from './date/date.module';
+import { Date } from './date/date.entity';
 
 @Module({
   imports: [
@@ -27,7 +29,7 @@ import { AuthModule } from './auth/auth.module';
         username: configService.get('DB_USER'),
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_NAME'),
-        entities: [User, Client, Subject, Document, InternalDocument],
+        entities: [User, Client, Subject, Document, InternalDocument, Date],
         synchronize: true,
         ssl: false,
       }),
@@ -39,6 +41,7 @@ import { AuthModule } from './auth/auth.module';
     DocumentModule,
     InternalDocumentModule,
     AuthModule,
+    DateModule,
   ],
   controllers: [AppController],
   providers: [],

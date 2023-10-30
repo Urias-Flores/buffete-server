@@ -25,16 +25,16 @@ export class UserController {
 
   @Post()
   create(@Body() user: any) {
-    return this.userService.save(user);
+    return this.userService.createUser(user);
   }
 
   @Put(':id')
-  update(@Param('id') id, @Body() user) {
-    return this.userService.update(id, user);
+  update(@Param('id') id: number, @Body() user: any) {
+    return this.userService.updateUser(id, user);
   }
 
   @Delete(':id')
-  delete(@Param('id') id) {
-    return this.userService.delete(id);
+  delete(@Param('id') id: number) {
+    return this.userService.deleteUser(id);
   }
 }
