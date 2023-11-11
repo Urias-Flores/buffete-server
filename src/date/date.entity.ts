@@ -1,20 +1,20 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
-import { Client } from '../client/client.entity';
-import { User } from '../user/user.entity';
+import { ClientEntity } from '../client/client.entity';
+import { UserEntity } from '../user/user.entity';
 
 @Entity('date')
-export class Date {
+export class DateEntity {
   @PrimaryGeneratedColumn({ type: 'int' })
   DateID: number;
 
   @Column({ type: 'varchar', length: 300})
   Issue: string;
 
-  @ManyToOne(() => Client, (client: Client) => client.Dates)
+  @ManyToOne(() => ClientEntity, (client: ClientEntity) => client.Dates)
   @Column({ type: 'int' })
   Client: number;
 
-  @ManyToOne(() => User, (user: User) => user.Dates)
+  @ManyToOne(() => UserEntity, (user: UserEntity) => user.Dates)
   @Column({ type: 'int' })
   User: number;
 

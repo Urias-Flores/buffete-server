@@ -7,33 +7,32 @@ import {
   Param,
   Body,
 } from '@nestjs/common';
-import { Date } from './date.entity';
+import { DateEntity } from './date.entity';
 import { DateService } from './date.service';
 import { DeleteResult, UpdateResult } from 'typeorm';
 
-@Controller('date')
+@Controller('dates')
 export class DateController {
   constructor(private readonly dateServices: DateService) {}
 
   @Get()
-  getAllDates(): Promise<Date[]> {
-    return this.dateServices.getAllDates();
+  getAllDates(): Promise<DateEntity[]> {
+    return this.dateServices.findAll();
   }
 
   @Get(':id')
-  getDateByID(@Param() params: any): Promise<Date> {
-    return this.dateServices.getDateByID(params.id);
+  getDateByID(@Param() params: any): Promise<DateEntity> {
+    return this.dateServices.findByID(params.id);
   }
 
   @Post()
-  createDate(@Body() body: any): Promise<Date> {
+  createDate(@Body() body: any): Promise<DateEntity> {
     return this.dateServices.createDate(body);
   }
 
-  @Put(':id')
-  updateDate(@Body() body: any, @Param() params: any): Promise<UpdateResult> {
-    const dateID = params.id;
-    return this.dateServices.updateDate(dateID, body);
+  @Put()
+  updateDate(@Body() body: any): Promise<UpdateResult> {
+    return this.dateServices.updateDate(body);
   }
 
   @Delete(':id')

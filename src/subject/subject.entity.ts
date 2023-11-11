@@ -1,5 +1,5 @@
-import { Document } from 'src/document/document.entity';
-import { User } from 'src/user/user.entity';
+import { DocumentEntity } from '../document/document.entity';
+import { UserEntity } from '../user/user.entity';
 import {
   Entity,
   Column,
@@ -9,13 +9,13 @@ import {
 } from 'typeorm';
 
 @Entity('subject')
-export class Subject {
+export class SubjectEntity {
   @PrimaryGeneratedColumn({ type: 'int' })
   SubjectID: number;
 
-  @ManyToOne(() => User, (user) => user.Subjects)
+  @ManyToOne(() => UserEntity, (user) => user.Subjects)
   @Column({ type: 'int' })
-  User: User;
+  User: UserEntity;
 
   @Column({ type: 'varchar', length: 30 })
   Name: string;
@@ -26,6 +26,6 @@ export class Subject {
   @Column({ type: 'timestamp' })
   UpdatedDate: Date;
 
-  @OneToMany(() => Document, (document) => document.Subject)
-  Documents: Document[];
+  @OneToMany(() => DocumentEntity, (document) => document.Subject)
+  Documents: DocumentEntity[];
 }

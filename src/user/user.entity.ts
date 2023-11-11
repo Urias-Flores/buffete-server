@@ -1,12 +1,12 @@
-import { Subject } from 'src/subject/subject.entity';
-import { Client } from 'src/client/client.entity';
+import { SubjectEntity } from '../subject/subject.entity';
+import { ClientEntity } from '../client/client.entity';
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
-import { InternalDocument } from '../internaldocument/internaldocument.entity';
-import { Document } from '../document/document.entity';
-import { Date } from '../date/date.entity';
+import { InternalDocumentEntity } from '../internaldocument/internaldocument.entity';
+import { DocumentEntity } from '../document/document.entity';
+import { DateEntity } from '../date/date.entity';
 
 @Entity('user')
-export class User {
+export class UserEntity {
   @PrimaryGeneratedColumn({ type: 'int' })
   UserID: number;
 
@@ -34,21 +34,21 @@ export class User {
   @Column({ type: 'varchar', length: 80 })
   URL: string;
 
-  @OneToMany(() => Client, (client) => client.User)
-  Clients: Client[];
+  @OneToMany(() => ClientEntity, (client) => client.User)
+  Clients: ClientEntity[];
 
-  @OneToMany(() => Subject, (subject) => subject.User)
-  Subjects: Subject[];
+  @OneToMany(() => SubjectEntity, (subject) => subject.User)
+  Subjects: SubjectEntity[];
 
   @OneToMany(
-    () => InternalDocument,
+    () => InternalDocumentEntity,
     (internalDocument) => internalDocument.User,
   )
-  InternalDocuments: InternalDocument[];
+  InternalDocuments: InternalDocumentEntity[];
 
-  @OneToMany(() => Document, (document: Document) => document.User)
-  Documents: Document[];
+  @OneToMany(() => DocumentEntity, (document: DocumentEntity) => document.User)
+  Documents: DocumentEntity[];
 
-  @OneToMany(() => Date, (date: Date) => date.User)
-  Dates: Date[];
+  @OneToMany(() => DateEntity, (date: DateEntity) => date.User)
+  Dates: DateEntity[];
 }

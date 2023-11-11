@@ -8,39 +8,31 @@ import {
   Body,
 } from '@nestjs/common';
 import { SubjectService } from './subject.service';
-import { Subject } from './subject.entity';
+import { SubjectEntity } from './subject.entity';
 import { DeleteResult, UpdateResult } from 'typeorm';
 
-@Controller('subject')
+@Controller('subjects')
 export class SubjectController {
   constructor(private readonly subjectService: SubjectService) {}
 
   @Get()
-  async findAll(): Promise<Subject[]> {
+  async findAll(): Promise<SubjectEntity[]> {
     return await this.subjectService.findAll();
   }
 
-  @Get('/name/:name')
-  async getSubjectByName(@Param() params): Promise<Subject> {
-    return await this.subjectService.findByName(params.name);
-  }
-
   @Get(':id')
-  async findByID(@Param('id') id: number): Promise<Subject> {
+  async findByID(@Param('id') id: number): Promise<SubjectEntity> {
     return await this.subjectService.findByID(id);
   }
 
   @Post()
-  async save(@Body() subject: Subject): Promise<Subject> {
+  async save(@Body() subject: SubjectEntity): Promise<SubjectEntity> {
     return await this.subjectService.save(subject);
   }
 
-  @Put(':id')
-  async update(
-    @Param('id') id: number,
-    @Body() subject: any,
-  ): Promise<UpdateResult> {
-    return await this.subjectService.update(id, subject);
+  @Put()
+  async update(@Body() subject: any): Promise<UpdateResult> {
+    return await this.subjectService.update(subject);
   }
 
   @Delete(':id')

@@ -1,12 +1,12 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
-import { User } from '../user/user.entity';
+import { UserEntity } from '../user/user.entity';
 
 @Entity('internal-document')
-export class InternalDocument {
+export class InternalDocumentEntity {
   @PrimaryGeneratedColumn({ type: 'int' })
   InternalDocumentID: number;
 
-  @ManyToOne(() => User, (user: User) => user.InternalDocuments)
+  @ManyToOne(() => UserEntity, (user: UserEntity) => user.InternalDocuments)
   @Column({ type: 'int' })
   User: number;
 

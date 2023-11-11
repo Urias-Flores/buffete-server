@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from '../user/user.entity';
+import { UserEntity } from '../user/user.entity';
 import { Repository } from 'typeorm';
 import { HashService } from '../user/hash.service';
 import { AuthDto, ResponseDto } from './auth.dto';
@@ -8,13 +8,13 @@ import { AuthDto, ResponseDto } from './auth.dto';
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectRepository(User)
-    private readonly userService: Repository<User>,
+    @InjectRepository(UserEntity)
+    private readonly userService: Repository<UserEntity>,
     private readonly hashService: HashService,
   ) {}
 
   async login(user: AuthDto): Promise<ResponseDto> {
-    const users: User[] = await this.userService
+    const users: UserEntity[] = await this.userService
       .createQueryBuilder('user')
       .where('user.Email = :Email_Name', {
         Email_Name: user.Email_Name,

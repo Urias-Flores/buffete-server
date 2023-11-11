@@ -1,22 +1,22 @@
-import { Client } from 'src/client/client.entity';
+import { ClientEntity } from '../client/client.entity';
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
-import { Subject } from '../subject/subject.entity';
-import { User } from '../user/user.entity';
+import { SubjectEntity } from '../subject/subject.entity';
+import { UserEntity } from '../user/user.entity';
 
 @Entity('document')
-export class Document {
+export class DocumentEntity {
   @PrimaryGeneratedColumn({ type: 'int' })
   DocumentID: number;
 
-  @ManyToOne(() => Subject, (subject: Subject) => subject.Documents)
+  @ManyToOne(() => SubjectEntity, (subject: SubjectEntity) => subject.Documents)
   @Column({ type: 'int' })
   Subject: number;
 
-  @ManyToOne(() => Client, (client: Client) => client.Documents)
+  @ManyToOne(() => ClientEntity, (client: ClientEntity) => client.Documents)
   @Column({ type: 'int' })
   Client: number;
 
-  @ManyToOne(() => User, (user: User) => user.Documents)
+  @ManyToOne(() => UserEntity, (user: UserEntity) => user.Documents)
   @Column({ type: 'int' })
   User: number;
 

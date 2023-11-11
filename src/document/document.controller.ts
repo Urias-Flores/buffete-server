@@ -8,32 +8,32 @@ import {
   UseInterceptors,
   Res,
   Delete,
+  HttpException,
 } from '@nestjs/common';
-import { Document } from './document.entity';
+import { DocumentEntity } from './document.entity';
 import { DocumentService } from './document.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Response } from 'express';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as uuid from 'uuid';
-import { User } from "../user/user.entity";
 
-@Controller('document')
+@Controller('documents')
 export class DocumentController {
   constructor(private readonly documentRepository: DocumentService) {}
 
   @Get()
-  getDocuments(): Promise<Document[]> {
+  findDocuments(): Promise<DocumentEntity[]> {
     return this.documentRepository.findAll();
   }
 
   @Get(':id')
-  getDocumentByID(@Param() params: any): Promise<Document> {
+  findDocumentByID(@Param() params: any): Promise<DocumentEntity> {
     return this.documentRepository.findByID(params.id);
   }
 
   @Get('/download/:filename')
-  getFileDocument(@Param('filename') filename: string, @Res() res: Response) {
+  findFileDocument(@Param('filename') filename: string, @Res() res: Response) {
     const filePath = path.join(__dirname, '..', '..', 'files', filename);
     res.setHeader('Content-Disposition', `attachment; filename=file.pdf`);
     res.sendFile(filePath);
@@ -41,20 +41,20 @@ export class DocumentController {
 
   @Post()
   @UseInterceptors(FileInterceptor('File'))
-  async addDocument(
+  async createDocument(
     @Body('Name') name: string,
     @Body('Subject') subject: string,
     @Body('Client') client: string,
     @Body('User') user: string,
     @UploadedFile() file: Express.Multer.File,
-  ): Promise<Document> {
+  ): Promise<DocumentEntity> {
     const uniqueFileName = uuid.v4();
     const originalExtension: string = path.extname(file.originalname);
     const savedFileName = `${uniqueFileName}${originalExtension}`;
     const destinationPath: string = path.join('./files', savedFileName);
     fs.renameSync(file.path, destinationPath);
 
-    const document: Document = new Document();
+    const document: DocumentEntity = new DocumentEntity();
     document.Subject = parseInt(subject);
     document.Client = parseInt(client);
     document.User = parseInt(user);
@@ -65,32 +65,34 @@ export class DocumentController {
       return await this.documentRepository.save(document);
     } catch (exception) {
       fs.unlink(destinationPath, (error) => {
+        console.log(error);
         if (error) {
-          console.log('Error al eliminar el archivo');
+          throw new HttpException(
+            `El documento no pudo ser eliminado de la carpeta.\nDocumento: ${destinationPath}`,
+            500,
+          );
         }
       });
-      return exception;
+      throw new HttpException('El documento no pudo ser almacenado', 500);
     }
   }
 
   @Delete(':id')
   async deleteDocument(@Param() params: any) {
-    try {
-      const document = await this.documentRepository.findByID(params.id);
-      if (Object.keys(document).length > 0) {
-        const result = await this.documentRepository.delete(params.id);
-        if (result.affected > 0) {
-          fs.unlink(path.join('./files', document.URL), (error) => {
-            if (error) {
-              console.log('Error al eliminar el archivo');
-            }
-          });
-          return result;
-        }
+    const document = await this.documentRepository.findByID(params.id);
+    if (Object.keys(document).length > 0) {
+      const result = await this.documentRepository.delete(params.id);
+      if (result.affected > 0) {
+        fs.unlink(path.join('./files', document.URL), (error) => {
+          if (error) {
+            throw new HttpException(
+              `El documento no pudo ser eliminado de la carpeta.\nDocumento: ${document.URL}`,
+              500,
+            );
+          }
+        });
+        return result;
       }
-    } catch (exception) {
-      console.log(exception);
-      return { affected: 0, raw: 0 };
     }
   }
 }

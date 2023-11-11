@@ -1,45 +1,84 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DeleteResult, Repository, UpdateResult } from 'typeorm';
-import { Document } from './document.entity';
+import {
+  DeleteResult,
+  QueryFailedError,
+  Repository,
+  UpdateResult,
+} from 'typeorm';
+import { DocumentEntity } from './document.entity';
 
 @Injectable()
 export class DocumentService {
   constructor(
-    @InjectRepository(Document)
-    private readonly documentService: Repository<Document>,
+    @InjectRepository(DocumentEntity)
+    private readonly documentService: Repository<DocumentEntity>,
   ) {}
 
-  async findAll(): Promise<Document[]> {
-    return await this.documentService.find({
-      relations: ['Subject', 'Client'],
-    });
-  }
-
-  async findByID(DocumentID: number): Promise<Document> {
-    const documents = await this.documentService.find({
-      where: { DocumentID },
-      relations: ['Subject'],
-    });
-    return documents[0];
-  }
-
-  async save(document: Document): Promise<Document> {
-    document.CreatedDate = new Date();
-    document.UpdatedDate = new Date();
+  async findAll(): Promise<DocumentEntity[]> {
     try {
-      return await this.documentService.save(document);
+      return await this.documentService.find({
+        relations: ['Subject', 'Client'],
+      });
     } catch (error) {
-      throw new Error('Error al insertar documento');
+      throw new HttpException('No se pudieron obtener los clientes', 500);
     }
   }
 
-  async update(DocumentID: number, document: Document): Promise<UpdateResult> {
-    document.UpdatedDate = new Date();
-    return await this.documentService.update({ DocumentID }, document);
+  async findByID(DocumentID: any): Promise<DocumentEntity> {
+    try {
+      const documents = await this.documentService.find({
+        where: { DocumentID },
+        relations: ['Subject'],
+      });
+      return documents[0];
+    } catch (error) {
+      if (error instanceof QueryFailedError) {
+        throw new HttpException(
+          'El id del documento no es valido o no es un numero',
+          400,
+        );
+      }
+      throw new HttpException('No se pudo obtener el cliente', 500);
+    }
   }
 
-  async delete(DocumentID: number): Promise<DeleteResult> {
-    return await this.documentService.delete(DocumentID);
+  async save(document: DocumentEntity): Promise<DocumentEntity> {
+    try {
+      document.CreatedDate = new Date();
+      document.UpdatedDate = new Date();
+      return await this.documentService.save(document);
+    } catch (error) {
+      throw new HttpException('El documento no pudo ser almacenado', 500);
+    }
+  }
+
+  async update(document: DocumentEntity): Promise<UpdateResult> {
+    if (!document.DocumentID) {
+      throw new HttpException('Debe incluir el id del documento', 400);
+    }
+    try {
+      document.UpdatedDate = new Date();
+      return await this.documentService.update(
+        { DocumentID: document.DocumentID },
+        document,
+      );
+    } catch (error) {
+      throw new HttpException('El documento no pudo ser actualizado', 500);
+    }
+  }
+
+  async delete(DocumentID: any): Promise<DeleteResult> {
+    try {
+      return await this.documentService.delete(DocumentID);
+    } catch (error) {
+      if (error instanceof QueryFailedError) {
+        throw new HttpException(
+          'El id del documento no es valido o no es un numero',
+          400,
+        );
+      }
+      throw new HttpException('El documento no pudo ser eliminado', 500);
+    }
   }
 }

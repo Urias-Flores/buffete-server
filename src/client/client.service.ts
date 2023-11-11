@@ -1,57 +1,84 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Client } from './client.entity';
-import { Repository } from 'typeorm';
-import { User } from 'src/user/user.entity';
-import { Document } from '../document/document.entity';
-import { Subject } from '../subject/subject.entity';
+import {
+  DeleteResult,
+  QueryFailedError,
+  Repository,
+  UpdateResult,
+} from 'typeorm';
+import { ClientEntity } from './client.entity';
 
 @Injectable()
 export class ClientService {
   constructor(
-    @InjectRepository(Client)
-    private readonly clientRepository: Repository<Client>,
-    @InjectRepository(Subject)
-    private readonly subjectRepository: Repository<Subject>,
-    @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
-    @InjectRepository(Document)
-    private readonly documentRepository: Repository<Document>,
+    @InjectRepository(ClientEntity)
+    private readonly clientRepository: Repository<ClientEntity>,
   ) {}
 
-  async findAll(): Promise<Client[]> {
-    return await this.clientRepository.find({
-      relations: ['User', 'Documents'],
-      order: { Name: 'ASC' },
-    });
+  async findAll(): Promise<ClientEntity[]> {
+    try {
+      return await this.clientRepository.find({
+        relations: ['User', 'Documents'],
+        order: { Name: 'ASC' },
+      });
+    } catch (error) {
+      throw new HttpException('Los clientes no pudieron ser recuperados', 500);
+    }
   }
 
-  async findByID(ClientID: number): Promise<Client> {
-    const clients = await this.clientRepository.find({
-      where: { ClientID: ClientID },
-      relations: ['User', 'Documents'],
-    });
-    return clients[0];
+  async findByID(ClientID: any): Promise<ClientEntity> {
+    try {
+      const clients = await this.clientRepository.find({
+        where: { ClientID: ClientID },
+        relations: ['User', 'Documents'],
+      });
+      return clients[0];
+    } catch (error) {
+      if (error instanceof QueryFailedError) {
+        throw new HttpException(
+          'El id recibido no es valido o no es un numero',
+          400,
+        );
+      }
+      throw new HttpException('Error al obtener cliente', 400);
+    }
   }
 
-  async findByURL(URL: string) {
-    return await this.clientRepository.find({
-      where: { URL: URL },
-      relations: ['User', 'Documents'],
-    });
+  async save(client: ClientEntity): Promise<ClientEntity> {
+    try {
+      client.URL = client.Name.replace(/ /g, '-');
+      return await this.clientRepository.save(client);
+    } catch (error) {
+      throw new HttpException('El cliente no pudo ser almacenado', 500);
+    }
   }
 
-  async save(client: Client): Promise<Client> {
-    client.URL = client.Name.replace(/ /g, '-');
-    return await this.clientRepository.save(client);
+  async update(client: ClientEntity): Promise<UpdateResult> {
+    if (!client.ClientID) {
+      throw new HttpException('Debe incluir el id del cliente', 400);
+    }
+    try {
+      client.URL = client.Name.replace(/ /g, '-');
+      return await this.clientRepository.update(
+        { ClientID: client.ClientID },
+        client,
+      );
+    } catch (error) {
+      throw new HttpException('El cliente no pudo ser actualizado', 500);
+    }
   }
 
-  async update(ClientID: number, client: Client) {
-    client.URL = client.Name.replace(/ /g, '-');
-    return await this.clientRepository.update({ ClientID }, client);
-  }
-
-  async delete(ClientID: number) {
-    return await this.clientRepository.delete(ClientID);
+  async delete(ClientID: number): Promise<DeleteResult> {
+    try {
+      return await this.clientRepository.delete(ClientID);
+    } catch (error) {
+      if (error instanceof QueryFailedError) {
+        throw new HttpException(
+          'El id del cliente no es valido o no es un numero',
+          400,
+        );
+      }
+      throw new HttpException('El cliente no pudo ser eliminado', 500);
+    }
   }
 }

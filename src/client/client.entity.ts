@@ -1,5 +1,5 @@
-import { Document } from 'src/document/document.entity';
-import { User } from 'src/user/user.entity';
+import { DocumentEntity } from '../document/document.entity';
+import { UserEntity } from '../user/user.entity';
 import {
   Entity,
   Column,
@@ -7,16 +7,16 @@ import {
   ManyToOne,
   OneToMany,
 } from 'typeorm';
-import { Date } from '../date/date.entity';
+import { DateEntity } from '../date/date.entity';
 
 @Entity('client')
-export class Client {
+export class ClientEntity {
   @PrimaryGeneratedColumn({ type: 'int' })
   ClientID: number;
 
-  @ManyToOne(() => User, (user) => user.Clients)
+  @ManyToOne(() => UserEntity, (user) => user.Clients)
   @Column({ type: 'int' })
-  User: User;
+  User: UserEntity;
 
   @Column({ type: 'varchar', length: 80 })
   Name: string;
@@ -36,9 +36,9 @@ export class Client {
   @Column({ type: 'varchar', length: 84 })
   URL: string;
 
-  @OneToMany(() => Document, (document) => document.Client)
-  Documents: Document[];
+  @OneToMany(() => DocumentEntity, (document) => document.Client)
+  Documents: DocumentEntity[];
 
-  @OneToMany(() => Date, (date: Date) => date.Client)
-  Dates: Date[];
+  @OneToMany(() => DateEntity, (date: DateEntity) => date.Client)
+  Dates: DateEntity[];
 }

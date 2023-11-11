@@ -1,47 +1,81 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Subject } from './subject.entity';
-import { Repository } from 'typeorm';
+import { SubjectEntity } from './subject.entity';
+import {
+  DeleteResult,
+  QueryFailedError,
+  Repository,
+  UpdateResult,
+} from 'typeorm';
 
 @Injectable()
 export class SubjectService {
   constructor(
-    @InjectRepository(Subject)
-    private readonly subjectRepository: Repository<Subject>,
+    @InjectRepository(SubjectEntity)
+    private readonly subjectRepository: Repository<SubjectEntity>,
   ) {}
 
-  async findAll(): Promise<Subject[]> {
-    return await this.subjectRepository.find({
-      relations: ['Documents', 'User'],
-      order: { Name: 'ASC' },
-    });
+  async findAll(): Promise<SubjectEntity[]> {
+    try {
+      return await this.subjectRepository.find({
+        relations: ['Documents', 'User'],
+        order: { Name: 'ASC' },
+      });
+    } catch (error) {
+      throw new HttpException('Las materias no pudieron ser recuperadas', 500);
+    }
   }
 
-  async findByName(Name: string): Promise<Subject> {
-    const subjects = await this.subjectRepository.find({
-      relations: ['Documents', 'User'],
-      where: {
-        Name: Name,
-      },
-    });
-    return subjects[0];
-  }
-  async findByID(SubjectID: number): Promise<Subject> {
-    return await this.subjectRepository.findOneBy({ SubjectID });
-  }
-
-  async save(subject: Subject): Promise<Subject> {
-    subject.CreatedDate = new Date();
-    subject.UpdatedDate = new Date();
-    return await this.subjectRepository.save(subject);
+  async findByID(SubjectID: any): Promise<SubjectEntity> {
+    try {
+      return await this.subjectRepository.findOneBy({ SubjectID });
+    } catch (error) {
+      if (error instanceof QueryFailedError) {
+        throw new HttpException(
+          'El id de la materia no es valido o no es un numero',
+          400,
+        );
+      }
+      throw new HttpException('Error al obtener materia', 500);
+    }
   }
 
-  async update(SubjectID: number, subject: Subject) {
-    subject.UpdatedDate = new Date();
-    return await this.subjectRepository.update({ SubjectID }, subject);
+  async save(subject: SubjectEntity): Promise<SubjectEntity> {
+    try {
+      subject.CreatedDate = new Date();
+      subject.UpdatedDate = new Date();
+      return await this.subjectRepository.save(subject);
+    } catch (error) {
+      throw new HttpException('La materia no pudo ser almacenada', 500);
+    }
   }
 
-  async delete(SubjectID: number) {
-    return await this.subjectRepository.delete(SubjectID);
+  async update(subject: SubjectEntity): Promise<UpdateResult> {
+    if (!subject.SubjectID) {
+      throw new HttpException('Debe incluir el id de la materia', 400);
+    }
+    try {
+      subject.UpdatedDate = new Date();
+      return await this.subjectRepository.update(
+        { SubjectID: subject.SubjectID },
+        subject,
+      );
+    } catch (error) {
+      throw new HttpException('La materia no pudo ser actualizada', 500);
+    }
+  }
+
+  async delete(SubjectID: number): Promise<DeleteResult> {
+    try {
+      return await this.subjectRepository.delete(SubjectID);
+    } catch (error) {
+      if (error instanceof QueryFailedError) {
+        throw new HttpException(
+          'El id de la materia no es valido o no es un numero',
+          400,
+        );
+      }
+      throw new HttpException('La materia no pudo ser eliminada', 500);
+    }
   }
 }

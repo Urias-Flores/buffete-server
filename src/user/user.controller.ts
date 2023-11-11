@@ -8,33 +8,35 @@ import {
   Body,
 } from '@nestjs/common';
 import { UserService } from './user.service';
+import { UserEntity } from './user.entity';
+import { DeleteResult, UpdateResult } from 'typeorm';
 
-@Controller('user')
+@Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get()
-  findAll() {
+  findAllUser(): Promise<UserEntity[]> {
     return this.userService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: number) {
+  findUserByID(@Param('id') id: number): Promise<UserEntity> {
     return this.userService.findByID(id);
   }
 
   @Post()
-  create(@Body() user: any) {
-    return this.userService.createUser(user);
+  createUser(@Body() user: any): Promise<UserEntity> {
+    return this.userService.save(user);
   }
 
-  @Put(':id')
-  update(@Param('id') id: number, @Body() user: any) {
-    return this.userService.updateUser(id, user);
+  @Put()
+  updateUser(@Body() user: any): Promise<UpdateResult> {
+    return this.userService.update(user);
   }
 
   @Delete(':id')
-  delete(@Param('id') id: number) {
-    return this.userService.deleteUser(id);
+  deleteUser(@Param('id') id: number): Promise<DeleteResult> {
+    return this.userService.delete(id);
   }
 }
