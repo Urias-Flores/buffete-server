@@ -18,7 +18,7 @@ export class ClientService {
   async findAll(): Promise<ClientEntity[]> {
     try {
       return await this.clientRepository.find({
-        relations: ['User', 'Documents'],
+        relations: ['User', 'Documents', 'Dates'],
         order: { Name: 'ASC' },
       });
     } catch (error) {
@@ -30,7 +30,7 @@ export class ClientService {
     try {
       const clients = await this.clientRepository.find({
         where: { ClientID: ClientID },
-        relations: ['User', 'Documents'],
+        relations: ['User', 'Documents', 'Dates'],
       });
       return clients[0];
     } catch (error) {

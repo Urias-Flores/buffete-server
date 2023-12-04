@@ -20,7 +20,16 @@ export class UserService {
   async findAll(): Promise<UserEntity[]> {
     try {
       return await this.userRepository.find({
-        relations: ['Clients', 'Documents'],
+        relations: [
+          'Clients',
+          'Documents',
+          'Dates',
+          'InternalDocuments',
+          'Subjects',
+        ],
+        order: {
+          Name: 'ASC',
+        },
       });
     } catch (error) {
       throw new HttpException('El usuario no pudieron ser recuperadas', 500);
@@ -30,7 +39,13 @@ export class UserService {
   async findByID(UserID: any): Promise<UserEntity> {
     try {
       const users = await this.userRepository.find({
-        relations: ['Clients', 'Documents'],
+        relations: [
+          'Clients',
+          'Documents',
+          'Dates',
+          'InternalDocuments',
+          'Subjects',
+        ],
         where: { UserID: UserID },
       });
       return users[0];
