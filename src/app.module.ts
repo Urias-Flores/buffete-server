@@ -28,7 +28,7 @@ import { InternalDocument } from './internaldocument/internaldocument.entity';
         database: configService.get('DB_NAME'),
         entities: [User, Client, Subject, Document, InternalDocument],
         synchronize: true,
-        ssl: true,
+        ssl: false,
       }),
       inject: [ConfigService],
     }),
