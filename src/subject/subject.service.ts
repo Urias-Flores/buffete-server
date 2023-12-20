@@ -28,7 +28,15 @@ export class SubjectService {
 
   async findByID(SubjectID: any): Promise<SubjectEntity> {
     try {
-      return await this.subjectRepository.findOneBy({ SubjectID });
+      const subjects = await this.subjectRepository.find({
+        relations: ['Documents', 'User'],
+        where: {
+          SubjectID: SubjectID,
+        },
+        order: { Name: 'ASC' },
+      });
+
+      return subjects[0];
     } catch (error) {
       if (error instanceof QueryFailedError) {
         throw new HttpException(

@@ -17,10 +17,15 @@ import { Response } from 'express';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as uuid from 'uuid';
+import { ClientService } from '../client/client.service';
+import { ClientEntity } from '../client/client.entity';
 
 @Controller('documents')
 export class DocumentController {
-  constructor(private readonly documentRepository: DocumentService) {}
+  constructor(
+    private readonly documentRepository: DocumentService,
+    private readonly clientService: ClientService,
+  ) {}
 
   @Get()
   findDocuments(): Promise<DocumentEntity[]> {
@@ -32,10 +37,24 @@ export class DocumentController {
     return this.documentRepository.findByID(params.id);
   }
 
-  @Get('/download/:filename')
-  findFileDocument(@Param('filename') filename: string, @Res() res: Response) {
-    const filePath = path.join(__dirname, '..', '..', 'files', filename);
-    res.setHeader('Content-Disposition', `attachment; filename=file.pdf`);
+  @Get('/download/files/:folderName/:documentName')
+  findFileDocument(
+    @Param('folderName') folderName: string,
+    @Param('documentName') documentName: string,
+    @Res() res: Response,
+  ) {
+    const filePath = path.join(
+      __dirname,
+      '..',
+      '..',
+      'files',
+      folderName,
+      documentName,
+    );
+    res.setHeader(
+      'Content-Disposition',
+      `attachment; filename=${folderName.replace('-', ' ')}.pdf`,
+    );
     res.sendFile(filePath);
   }
 
@@ -48,18 +67,32 @@ export class DocumentController {
     @Body('User') user: string,
     @UploadedFile() file: Express.Multer.File,
   ): Promise<DocumentEntity> {
-    const uniqueFileName = uuid.v4();
-    const originalExtension: string = path.extname(file.originalname);
-    const savedFileName = `${uniqueFileName}${originalExtension}`;
-    const destinationPath: string = path.join('./files', savedFileName);
-    fs.renameSync(file.path, destinationPath);
-
     const document: DocumentEntity = new DocumentEntity();
     document.Subject = parseInt(subject);
     document.Client = parseInt(client);
     document.User = parseInt(user);
     document.Name = name;
-    document.URL = savedFileName;
+
+    const clientObject: ClientEntity = await this.clientService.findByID(
+      document.Client,
+    );
+
+    const clientFolderPath: string = path.join('./files', clientObject.URL);
+    if (!fs.existsSync(clientFolderPath)) {
+      fs.mkdirSync(clientFolderPath, { recursive: true });
+    }
+
+    const uniqueFileName = uuid.v4();
+    const originalExtension: string = path.extname(file.originalname);
+    const savedFileName = `${uniqueFileName}${originalExtension}`;
+    const destinationPath: string = path.join(
+      clientFolderPath,
+      savedFileName,
+    );
+
+    fs.renameSync(file.path, destinationPath);
+
+    document.URL = destinationPath;
 
     try {
       return await this.documentRepository.save(document);

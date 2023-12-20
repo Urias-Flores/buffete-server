@@ -4,6 +4,7 @@ import { UserEntity } from '../user/user.entity';
 import { Repository } from 'typeorm';
 import { HashService } from '../user/hash.service';
 import { AuthDto, ResponseDto } from './auth.dto';
+import { response } from "express";
 
 @Injectable()
 export class AuthService {
@@ -22,7 +23,7 @@ export class AuthService {
       .getMany();
 
     if (users.length === 0) {
-      return new ResponseDto(-1, 'Email or name not found', null);
+      return new ResponseDto(-2, 'Email or name not found', null);
     }
 
     const passwordMatch = await this.hashService.comparePasswords(
@@ -31,8 +32,11 @@ export class AuthService {
     );
 
     if (!passwordMatch) {
-      return new ResponseDto(0, 'Incorrect Password', null);
+      return new ResponseDto(-1, 'Incorrect Password', null);
     } else {
+      if (users[0].State === 0) {
+        return new ResponseDto(0, 'Inactive user', null);
+      }
       return new ResponseDto(1, 'Success', users[0]);
     }
   }

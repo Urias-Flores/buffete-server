@@ -1,10 +1,5 @@
 import { HttpException, Injectable } from '@nestjs/common';
-import {
-  DeleteResult,
-  QueryFailedError,
-  Repository,
-  UpdateResult,
-} from 'typeorm';
+import { DeleteResult, QueryFailedError, Repository } from 'typeorm';
 import { InternalDocumentEntity } from './internaldocument.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 
