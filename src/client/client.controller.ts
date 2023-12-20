@@ -8,39 +8,37 @@ import {
   Body,
 } from '@nestjs/common';
 import { ClientService } from './client.service';
-import { Client } from './client.entity';
+import { ClientEntity } from './client.entity';
+import { DeleteResult, UpdateResult } from 'typeorm';
 
-@Controller('client')
+@Controller('clients')
 export class ClientController {
   constructor(private readonly clientService: ClientService) {}
 
   @Get()
-  findAll() {
+  findAllClients(): Promise<ClientEntity[]> {
     return this.clientService.findAll();
   }
 
   @Get(':id')
-  findClientByID(@Param('id') id: number): Promise<Client> {
+  findClientByID(@Param() params: any): Promise<ClientEntity> {
+    const id = params.id;
     return this.clientService.findByID(id);
   }
 
-  @Get('/URL/:URL')
-  findByURL(@Param('URL') URL: string) {
-    return this.clientService.findByURL(URL);
-  }
-
   @Post()
-  create(@Body() client) {
+  createClient(@Body() client: ClientEntity): Promise<ClientEntity> {
     return this.clientService.save(client);
   }
 
-  @Put(':id')
-  update(@Param('id') id, @Body() client) {
-    return this.clientService.update(id, client);
+  @Put()
+  updateClient(@Body() client: ClientEntity): Promise<UpdateResult> {
+    return this.clientService.update(client);
   }
 
   @Delete(':id')
-  delete(@Param('id') id) {
+  deleteClient(@Param() params: any): Promise<DeleteResult> {
+    const id = params.id;
     return this.clientService.delete(id);
   }
 }
