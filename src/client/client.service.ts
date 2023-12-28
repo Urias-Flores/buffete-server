@@ -49,6 +49,7 @@ export class ClientService {
       client.URL = client.Name.replace(/ /g, '-');
       return await this.clientRepository.save(client);
     } catch (error) {
+      console.log(error)
       throw new HttpException('El cliente no pudo ser almacenado', 500);
     }
   }
