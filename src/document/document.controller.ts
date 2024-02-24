@@ -115,8 +115,9 @@ export class DocumentController {
     const document = await this.documentRepository.findByID(params.id);
     if (Object.keys(document).length > 0) {
       const result = await this.documentRepository.delete(params.id);
+
       if (result.affected > 0) {
-        fs.unlink(path.join('./files', document.URL), (error) => {
+        fs.unlink(path.join(document.URL), (error) => {
           if (error) {
             throw new HttpException(
               `El documento no pudo ser eliminado de la carpeta.\nDocumento: ${document.URL}`,
