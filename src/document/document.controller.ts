@@ -43,6 +43,8 @@ export class DocumentController {
     @Param('documentName') documentName: string,
     @Res() res: Response,
   ) {
+
+
     const filePath = path.join(
       __dirname,
       '..',
@@ -101,7 +103,7 @@ export class DocumentController {
         console.log(error);
         if (error) {
           throw new HttpException(
-            `El documento no pudo ser eliminado de la carpeta.\nDocumento: ${destinationPath}`,
+            `El documento no pudo ser almacenado la carpeta.\nDocumento: ${destinationPath}`,
             500,
           );
         }
