@@ -5,19 +5,9 @@ import fs from 'fs';
 
 async function bootstrap() {
   dotenv.config();
-
-  const httpsOptions = {
-    key: fs.readFileSync('/home/buffete/certificates/grupo-sosamorales/private.key'),
-    cert: fs.readFileSync('/home/buffete/certificates/grupo-sosamorales/certificate.crt'),
-  };
-
-  const app = await NestFactory.create(AppModule, {
-    httpsOptions
-  });
-
+  const app = await NestFactory.create(AppModule);
   app.setGlobalPrefix('/api');
   app.enableCors();
-
   await app.listen(process.env.PORT || 8000);
 }
 bootstrap();
