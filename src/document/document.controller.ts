@@ -37,7 +37,7 @@ export class DocumentController {
     return this.documentRepository.findByID(params.id);
   }
 
-  @Get('/download/files/:folderName/:documentName')
+  @Get('/download/:folderName/:documentName')
   findFileDocument(
     @Param('folderName') folderName: string,
     @Param('documentName') documentName: string,
