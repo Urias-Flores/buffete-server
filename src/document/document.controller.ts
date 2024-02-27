@@ -119,8 +119,6 @@ export class DocumentController {
     if (Object.keys(document).length > 0) {
       const result = await this.documentRepository.delete(params.id);
 
-      console.log(path.join(document.URL));
-
       const filePath = path.join(
         __dirname,
         '..',
@@ -128,6 +126,8 @@ export class DocumentController {
         'files',
         document.URL
       );
+
+      console.log(filePath);
 
       if (result.affected > 0) {
         fs.unlink(filePath, (error) => {
