@@ -19,6 +19,7 @@ import * as path from 'path';
 import * as uuid from 'uuid';
 import { ClientService } from '../client/client.service';
 import { ClientEntity } from '../client/client.entity';
+import { file } from 'googleapis/build/src/apis/file';
 
 @Controller('documents')
 export class DocumentController {
@@ -118,11 +119,21 @@ export class DocumentController {
     if (Object.keys(document).length > 0) {
       const result = await this.documentRepository.delete(params.id);
 
+      console.log(path.join(document.URL));
+
+      const filePath = path.join(
+        __dirname,
+        '..',
+        '..',
+        'files',
+        document.URL
+      );
+
       if (result.affected > 0) {
-        fs.unlink(path.join(document.URL), (error) => {
+        fs.unlink(filePath, (error) => {
           if (error) {
             throw new HttpException(
-              `El documento no pudo ser eliminado de la carpeta.\nDocumento: ${document.URL}`,
+              `El documento no pudo ser eliminado de la carpeta. \nDocumento: ${document.URL}`,
               500,
             );
           }

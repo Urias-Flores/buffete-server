@@ -92,12 +92,19 @@ export class InternalDocumentController {
     const internalDocument = await this.internalDocumentService.findByID(
       param.id,
     );
+
+    const filePath = path.join(
+      __dirname,
+      '..',
+      '..',
+      'internal-files',
+      internalDocument.URL,
+    );
+
     if (Object.keys(internalDocument).length > 0) {
       const result = await this.internalDocumentService.delete(param.id);
       if (result.affected > 0) {
-        fs.unlink(
-          path.join('./internal-files', internalDocument.URL),
-          (error) => {
+        fs.unlink(filePath, (error) => {
             if (error) {
               throw new HttpException(
                 'El documento no pudo eliminarse de la carpeta',
