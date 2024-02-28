@@ -1,4 +1,4 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
   DeleteResult,
@@ -7,6 +7,8 @@ import {
   UpdateResult,
 } from 'typeorm';
 import { ClientEntity } from './client.entity';
+import * as path from 'path';
+import * as fs from 'fs';
 
 @Injectable()
 export class ClientService {
@@ -59,11 +61,21 @@ export class ClientService {
       throw new HttpException('Debe incluir el id del cliente', 400);
     }
     try {
+      const currentClient: ClientEntity = await this.findByID(client.ClientID);
+      const oldPath: string = path.join(__dirname, '..', '..', './files', currentClient.URL);
+
       client.URL = client.Name.replace(/ /g, '-');
-      return await this.clientRepository.update(
+      const newPath: string = path.join(__dirname, '..', '..', './files', client.URL);
+
+      fs.rename(oldPath, newPath, (error) => {
+        throw new HttpException('Error al renombrar carpeta de archivos del client', 500)
+      });
+      
+  
+    return await this.clientRepository.update(
         { ClientID: client.ClientID },
         client,
-      );
+    );
     } catch (error) {
       throw new HttpException('El cliente no pudo ser actualizado', 500);
     }

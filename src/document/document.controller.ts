@@ -127,8 +127,6 @@ export class DocumentController {
         document.URL
       );
 
-      console.log(filePath);
-
       if (result.affected > 0) {
         fs.unlink(filePath, (error) => {
           if (error) {
