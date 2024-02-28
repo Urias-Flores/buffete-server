@@ -69,8 +69,7 @@ export class ClientService {
         const newPath: string = path.join(__dirname, '..', '..', './files', client.URL);
 
         fs.rename(oldPath, newPath, (error) => {
-          console.log(error)
-          throw new HttpException('Error al renombrar carpeta de archivos del client', 500)
+          if (error) throw new HttpException('Error al renombrar carpeta de archivos', 500);
         });
       }
   
