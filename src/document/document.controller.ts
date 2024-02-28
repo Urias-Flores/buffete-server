@@ -104,7 +104,7 @@ export class DocumentController {
         console.log(error);
         if (error) {
           throw new HttpException(
-            `El documento no pudo ser almacenado la carpeta.\nDocumento: ${destinationPath}`,
+            `El documento no pudo ser almacenado en la carpeta.\nDocumento: ${destinationPath}`,
             500,
           );
         }
