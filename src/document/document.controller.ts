@@ -95,7 +95,7 @@ export class DocumentController {
 
     fs.renameSync(file.path, destinationPath);
 
-    document.URL = destinationPath;
+    document.URL = path.join(clientObject.URL, savedFileName);
 
     try {
       return await this.documentRepository.save(document);
