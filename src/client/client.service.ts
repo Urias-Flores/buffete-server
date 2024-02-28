@@ -9,6 +9,7 @@ import {
 import { ClientEntity } from './client.entity';
 import * as path from 'path';
 import * as fs from 'fs';
+import { DocumentEntity } from 'src/document/document.entity';
 
 @Injectable()
 export class ClientService {
@@ -71,6 +72,12 @@ export class ClientService {
         fs.rename(oldPath, newPath, (error) => {
           if (error) throw new HttpException('Error al renombrar carpeta de archivos', 500);
         });
+
+        const newDocuments: any = currentClient.Documents.map( (document: DocumentEntity) => {
+          document.URL = newPath.split('/').pop() + document.URL.split('/')[1]
+        });
+
+        client.Documents = newDocuments;
       }
   
     return await this.clientRepository.update(
