@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { DocumentService } from './document.service';
 import { DocumentController } from './document.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -11,10 +11,12 @@ import { ClientModule } from '../client/client.module';
   imports: [
     TypeOrmModule.forFeature([DocumentEntity]),
     MulterModule.register({ dest: './files' }),
+    forwardRef(() => ClientModule),
     SubjectModule,
-    ClientModule,
   ],
   providers: [DocumentService],
   controllers: [DocumentController],
+  exports: [DocumentService]
 })
+
 export class DocumentModule {}

@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Injectable, forwardRef } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
   DeleteResult,
@@ -10,12 +10,14 @@ import { ClientEntity } from './client.entity';
 import * as path from 'path';
 import * as fs from 'fs';
 import { DocumentEntity } from 'src/document/document.entity';
+import { DocumentService } from 'src/document/document.service';
 
 @Injectable()
 export class ClientService {
   constructor(
     @InjectRepository(ClientEntity)
     private readonly clientRepository: Repository<ClientEntity>,
+    private readonly documentService: DocumentService,
   ) {}
 
   async findAll(): Promise<ClientEntity[]> {
@@ -73,11 +75,10 @@ export class ClientService {
           if (error) throw new HttpException('Error al renombrar carpeta de archivos', 500);
         });
 
-        const newDocuments: any = currentClient.Documents.map( (document: DocumentEntity) => {
-          document.URL = newPath.split('/').pop() + document.URL.split('/')[1]
+        currentClient.Documents.forEach( (document: DocumentEntity) => {
+          document.URL = newPath.split('/').pop() + document.URL.split('/')[1];
+          this.documentService.update(document);
         });
-
-        client.Documents = newDocuments;
       }
   
     return await this.clientRepository.update(
