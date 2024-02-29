@@ -76,7 +76,7 @@ export class ClientService {
         });
 
         currentClient.Documents.forEach( (document: DocumentEntity) => {
-          document.URL = newPath.split('/').pop() + document.URL.split('/')[1];
+          document.URL = path.join(newPath.split('/').pop(), document.URL.split('/')[1]);
           this.documentService.update(document);
         });
       }
