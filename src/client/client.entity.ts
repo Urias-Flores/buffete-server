@@ -24,7 +24,7 @@ export class ClientEntity {
   @Column({ type: 'varchar', length: 13 })
   Identity: string;
 
-  @Column({ type: 'varchar', length: 80 })
+  @Column({ type: 'varchar', length: 80, nullable: true })
   Email: string;
 
   @Column({ type: 'varchar', length: 15 })

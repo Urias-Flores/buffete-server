@@ -7,7 +7,7 @@ export class DateEntity {
   @PrimaryGeneratedColumn({ type: 'int' })
   DateID: number;
 
-  @Column({ type: 'varchar', length: 300})
+  @Column({ type: 'varchar', length: 300 })
   Issue: string;
 
   @ManyToOne(() => ClientEntity, (client: ClientEntity) => client.Dates)

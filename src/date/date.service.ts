@@ -19,6 +19,7 @@ export class DateService {
     try {
       return await this.dateRepository.find({
         relations: ['User', 'Client'],
+        order: { DateTime: 'ASC' },
       });
     } catch (error) {
       throw new HttpException('Las citas no pudieron ser recuperadas', 500);
